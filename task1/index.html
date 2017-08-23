@@ -1,0 +1,40 @@
+<body onload="loadImages();">
+    <div id="images"></div>
+</body>
+<script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous">
+</script>
+<script>
+    $("button").on("click", handleButtonClick);
+
+    function jsonFlickrFeed(json) {
+        var listTen = [];
+        function compare(a,b) {
+            if (a.title.toLowerCase() < b.title.toLowerCase())
+                return -1;
+            if (a.title.toLowerCase() > b.title.toLowerCase())
+                return 1;
+            return 0;
+        }
+
+        for (i=0; i<10; i++) {
+            listTen.push(json.items[i]);
+        }
+        var copyTen = listTen.slice();
+        copyTen.sort(compare); 
+        finalList = copyTen.slice(0,5);
+        $.each(finalList, function(i, item) {
+            $("<img />").attr("src", item.media.m).appendTo("#images");
+        });
+    };
+
+    function loadImages() {
+        $.ajax({
+            url: 'https://api.flickr.com/services/feeds/photos_public.gne',
+            dataType: 'jsonp',
+            data: { "tags": "kitten", "format": "json" }
+        });
+    }
+</script>
